@@ -45,6 +45,7 @@ void txt(char nome_arquivo[tam]);
 //curso para alterar o texto
 void gotoxy(int x, int y);
 void mover_px(int qtd, Tcaracter ** Px);
+int remover(Tcaracter ** Px, Tlinha **Py);
 
 int main(){
 
@@ -119,22 +120,21 @@ void inserir_linha(Ldescritor **l, Tlinha ** Py, int y){
 		(*l)->qtd_de_linhas=0;
 	}else {		
 		//insere no fim
-		if ((*Py)->prox == NULL){
-
+		if ((*Py)->prox == NULL){			
 			criar_no_linha(&novo);
 			(*Py)->prox=novo;
 			novo->ant=(*Py);
 			novo->prox=NULL;
 			(*l)->qtd_de_linhas++;
 			//insere no inicio com nos já inseridos
-		}else if((*Py)->ant==NULL && y==0){
+		}else if((*Py)->ant==NULL && y==0){				
 			criar_no_linha(&novo);
 			(*l)->prim=novo;
 			novo->prox=(*Py);
 			(*Py)->ant=novo;
 			(*l)->qtd_de_linhas++;
 			//insere no meio
-		}else{
+		}else{		
 			criar_no_linha(&novo);
 			aux=(*Py)->prox;
 			(*Py)->prox=novo;
@@ -169,16 +169,26 @@ void inserir_caracter_linha (Tcaracter *px,Tlinha **py, char c, int y){
 
 	//insere no inicio
 	if((*py)->linha==NULL){
+		if(c=='\n'){
+		criar_no_caracter(&novo,c);		
+		(*py)->linha=novo;
+		(*py)->qtd_caracter=0;		
+		}else if(c=='\0'){
+		(*py)->linha=px;
+		(*py)->qtd_caracter=y;		
+		}else{
 		criar_no_caracter(&novo,c);		
 		(*py)->linha=novo;
 		(*py)->qtd_caracter=1;			
+		}
+				
 	}
 	else {
-		if(px->letra=='\n'){
-			px=px->ant;				
-		}
+	//	if(px->letra=='\n'){
+	//		px=px->ant;				
+	//	}
 		//insere no fim
-		if (px->prox == NULL){		
+		if (px->prox == NULL && y!=0){		
 			criar_no_caracter(&novo,c);
 			px->prox=novo;
 			novo->ant=px;
@@ -187,11 +197,12 @@ void inserir_caracter_linha (Tcaracter *px,Tlinha **py, char c, int y){
 			if(c!='\n')
 				(*py)->qtd_caracter++;
 			//insere no inicio com nos já inseridos
-		}else if(px->ant==NULL && y==0){			
+		}else if(px->ant==NULL && y==0){	
+			
 			criar_no_caracter(&novo,c);
 			(*py)->linha=novo;
 			novo->prox=px;		
-			novo->ant=px->ant;
+			novo->ant=NULL;
 			px->ant=novo;		
 			(*py)->qtd_caracter++;	
 
@@ -225,9 +236,9 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 	char c;
 	//X: LINHA Y: COLUNA
 	int x=0,y=0;
-	Tlinha * Py=(*l)->prim;
-	Tcaracter * Px=Py->linha;
-
+	Tlinha * Py=(*l)->prim, *aux1=NULL,*aux2=NULL;
+	Tcaracter * Px=Py->linha, * aux;
+	int qtd_caracter_proxima_linha=0;
 	gotoxy(0,0);//inicio do texto
 
 	do{
@@ -244,13 +255,93 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 			return;
 			//enter
 		}else if(c==13){
-			inserir_caracter_linha(Px,&Py,'\n',y);
+
+			
+			
+			if(y==0 && x==0){
+		
+				if(Px==NULL){// primeiro caracter
+					
+					inserir_caracter_linha(Px,&Py,'\n',y);
+					inserir_linha(l,&Py,y);
+					Py=Py->prox;
+					Px=Py->linha;
+					system("cls");
+					exibir_texto(*l);
+					x++;					
+					gotoxy(x,y);
+				}else{
+				
+
+				inserir_linha(l,&Py,y);
+				Py=Py->ant;
+				inserir_caracter_linha(Px,&Py,'\n',y);
+				Py=Py->prox;
+				Px=Py->linha;
+				system("cls");
+				exibir_texto(*l);
+			//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
+					
+				x=1;
+				y=0;
+				gotoxy(x,y);
+			//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
+
+				
+				}
+
+				
+			
+
+
+			}else if(Px->prox==NULL){//'\n' no inicio do texto
+				
+
+					inserir_caracter_linha(Px,&Py,'\n',y);
 			inserir_linha(l,&Py,y);
 			x++;//ando com curso
 			y=0;
 			gotoxy(x,y);
 			Py=Py->prox;
 			Px=Py->linha;
+			//quebra de linha
+
+
+			}else{
+			aux=Px->prox;//ponto de inserção 'r'
+			
+			//aux->ant=NULL;//desconecta da linha
+
+			qtd_caracter_proxima_linha=Py->qtd_caracter-y;//qtd caracter proxima linha '2'
+
+			inserir_caracter_linha(Px,&Py,'\n',y);
+		
+			Px=Px->prox;//'\n'
+
+			Px->prox=NULL;//finaliza a primeira linha
+			
+			
+			
+			Py->qtd_caracter=y;//qtd caracter primeira linha
+			
+			inserir_linha(l,&Py,y);//Px='\n'
+			Py=Py->prox;
+			Px=Py->linha;
+
+			inserir_caracter_linha(aux,&Py,'\0',qtd_caracter_proxima_linha);			
+			Px=Py->linha;
+			Px->ant=NULL;
+			
+			system("cls");
+			exibir_texto(*l);
+			//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
+					
+			x++;
+			y=0;
+			gotoxy(x,y);
+			}
+
+
 		}else{
 			if( c == -32){
 			}
@@ -268,6 +359,7 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 							}else
 								mover_px(y,&Px);
 							//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
+							//printf("X1: %i Y1: %i Py: %i",x,y,Py->qtd_caracter);
 						}else{
 							y=Py->ant->qtd_caracter;
 							x--;
@@ -339,7 +431,24 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 							Px=Px->prox;
 							//printf("X3: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
 						}
+					}//backspace
+				}else if(c==8){
+				
+					if(y!=0){
+
+					if(remover(&Px,&Py)==0){
+						system("cls");
+						exibir_texto(*l);						
+						gotoxy(x,y);					
+					}else{// se remover no inicio com mais de um nó
+						system("cls");
+						exibir_texto(*l);
+						y--;
+						gotoxy(x,y);
 					}
+					}
+				
+				
 				}else if(isalnum(c) || c == ' '){
 
 					inserir_caracter_linha(Px,&Py,c,y);
@@ -365,6 +474,55 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 	} while (1);
 
 }
+
+
+
+int remover(Tcaracter ** Px, Tlinha **Py){
+	Tcaracter * aux1, *aux2; 
+	Tlinha *aux3=NULL;
+
+	if((*Py)->linha==NULL)//lista vazia
+		return 0;
+	else if((*Px)->ant==NULL){//inicio
+		if((*Px)->prox==NULL){//lista com um unico nó
+			aux1=(*Py)->linha;
+			(*Py)->linha=NULL;
+			(*Py)->qtd_caracter=0;
+			(*Px)=NULL;//PX
+			free(aux1);			
+			return 1;
+		}else{//lista com mais de um nó
+			aux1=(*Py)->linha;
+			(*Py)->linha=aux1->prox;
+			(*Py)->linha->ant=NULL;
+			(*Py)->qtd_caracter--;
+			(*Px)=(*Px)->prox;//PX
+			free(aux1);			
+			return 1;
+		}	
+	}else if((*Px)->prox==NULL){//fim
+		aux1=(*Px);
+		aux2=aux1->ant;
+		(*Px)=(*Px)->ant;//PX
+		free(aux1);
+		(*Py)->qtd_caracter--;
+		aux2->prox=NULL;
+		return 1;
+	}else{//meio
+		aux1=(*Px)->ant;
+		aux2=(*Px);
+		aux1->prox=aux2->prox;
+		aux2->prox->ant=aux1;
+		(*Px)=(*Px)->ant;//PX
+		(*Py)->qtd_caracter--;
+		free(aux2);
+		return 1;
+	}
+}
+
+
+
+
 void mover_px(int qtd, Tcaracter ** Px){
 
 	int i=1;
