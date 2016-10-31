@@ -170,23 +170,23 @@ void inserir_caracter_linha (Tcaracter *px,Tlinha **py, char c, int y){
 	//insere no inicio
 	if((*py)->linha==NULL){
 		if(c=='\n'){
-		criar_no_caracter(&novo,c);		
-		(*py)->linha=novo;
-		(*py)->qtd_caracter=0;		
+			criar_no_caracter(&novo,c);		
+			(*py)->linha=novo;
+			(*py)->qtd_caracter=0;		
 		}else if(c=='\0'){
-		(*py)->linha=px;
-		(*py)->qtd_caracter=y;		
+			(*py)->linha=px;
+			(*py)->qtd_caracter=y;		
 		}else{
-		criar_no_caracter(&novo,c);		
-		(*py)->linha=novo;
-		(*py)->qtd_caracter=1;			
+			criar_no_caracter(&novo,c);		
+			(*py)->linha=novo;
+			(*py)->qtd_caracter=1;			
 		}
-				
+
 	}
 	else {
-	//	if(px->letra=='\n'){
-	//		px=px->ant;				
-	//	}
+		//	if(px->letra=='\n'){
+		//		px=px->ant;				
+		//	}
 		//insere no fim
 		if (px->prox == NULL && y!=0){		
 			criar_no_caracter(&novo,c);
@@ -198,7 +198,7 @@ void inserir_caracter_linha (Tcaracter *px,Tlinha **py, char c, int y){
 				(*py)->qtd_caracter++;
 			//insere no inicio com nos já inseridos
 		}else if(px->ant==NULL && y==0){	
-			
+
 			criar_no_caracter(&novo,c);
 			(*py)->linha=novo;
 			novo->prox=px;		
@@ -256,12 +256,12 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 			//enter
 		}else if(c==13){
 
-			
-			
+
+
 			if(y==0 && x==0){
-		
+
 				if(Px==NULL){// primeiro caracter
-					
+
 					inserir_caracter_linha(Px,&Py,'\n',y);
 					inserir_linha(l,&Py,y);
 					Py=Py->prox;
@@ -271,74 +271,74 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 					x++;					
 					gotoxy(x,y);
 				}else{
-				
 
-				inserir_linha(l,&Py,y);
-				Py=Py->ant;
-				inserir_caracter_linha(Px,&Py,'\n',y);
-				Py=Py->prox;
-				Px=Py->linha;
-				system("cls");
-				exibir_texto(*l);
-			//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
-					
-				x=1;
-				y=0;
-				gotoxy(x,y);
-			//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
 
-				
+					inserir_linha(l,&Py,y);
+					Py=Py->ant;
+					inserir_caracter_linha(Px,&Py,'\n',y);
+					Py=Py->prox;
+					Px=Py->linha;
+					system("cls");
+					exibir_texto(*l);
+					//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
+
+					x=1;
+					y=0;
+					gotoxy(x,y);
+					//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
+
+
 				}
 
-				
-			
+
+
 
 
 			}else if(Px->prox==NULL){//'\n' no inicio do texto
-				
 
-					inserir_caracter_linha(Px,&Py,'\n',y);
-			inserir_linha(l,&Py,y);
-			x++;//ando com curso
-			y=0;
-			gotoxy(x,y);
-			Py=Py->prox;
-			Px=Py->linha;
-			//quebra de linha
+
+				inserir_caracter_linha(Px,&Py,'\n',y);
+				inserir_linha(l,&Py,y);
+				x++;//ando com curso
+				y=0;
+				gotoxy(x,y);
+				Py=Py->prox;
+				Px=Py->linha;
+				//quebra de linha
 
 
 			}else{
-			aux=Px->prox;//ponto de inserção 'r'
-			
-			//aux->ant=NULL;//desconecta da linha
+				aux=Px->prox;//ponto de inserção 'r'
 
-			qtd_caracter_proxima_linha=Py->qtd_caracter-y;//qtd caracter proxima linha '2'
+				//aux->ant=NULL;//desconecta da linha
 
-			inserir_caracter_linha(Px,&Py,'\n',y);
-		
-			Px=Px->prox;//'\n'
+				qtd_caracter_proxima_linha=Py->qtd_caracter-y;//qtd caracter proxima linha '2'
 
-			Px->prox=NULL;//finaliza a primeira linha
-			
-			
-			
-			Py->qtd_caracter=y;//qtd caracter primeira linha
-			
-			inserir_linha(l,&Py,y);//Px='\n'
-			Py=Py->prox;
-			Px=Py->linha;
+				inserir_caracter_linha(Px,&Py,'\n',y);
 
-			inserir_caracter_linha(aux,&Py,'\0',qtd_caracter_proxima_linha);			
-			Px=Py->linha;
-			Px->ant=NULL;
-			
-			system("cls");
-			exibir_texto(*l);
-			//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
-					
-			x++;
-			y=0;
-			gotoxy(x,y);
+				Px=Px->prox;//'\n'
+
+				Px->prox=NULL;//finaliza a primeira linha
+
+
+
+				Py->qtd_caracter=y;//qtd caracter primeira linha
+
+				inserir_linha(l,&Py,y);//Px='\n'
+				Py=Py->prox;
+				Px=Py->linha;
+
+				inserir_caracter_linha(aux,&Py,'\0',qtd_caracter_proxima_linha);			
+				Px=Py->linha;
+				Px->ant=NULL;
+
+				system("cls");
+				exibir_texto(*l);
+				//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
+
+				x++;
+				y=0;
+				gotoxy(x,y);
 			}
 
 
@@ -433,22 +433,94 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 						}
 					}//backspace
 				}else if(c==8){
-				
-					if(y!=0){
 
-					if(remover(&Px,&Py)==0){
+					if(y!=0){
+						/*
+						if(Px->letra=='\n'){
+						remover(&Px,&Py);
+						free(Py->prox);
+						Py->prox=NULL;
+						(*l)->ult=Py;
+
+
+						}else if(remover(&Px,&Py)==0){
 						system("cls");
 						exibir_texto(*l);						
-						gotoxy(x,y);					
-					}else{// se remover no inicio com mais de um nó
+						gotoxy(x,y);	
+
+						}else{// se remover no inicio com mais de um nó
 						system("cls");
 						exibir_texto(*l);
 						y--;
 						gotoxy(x,y);
+						}*/
+
+						
+						if(Py->prox!=NULL){//na ultima linha
+								
+
+
+
+								aux=Px->prox;
+							aux1=Py->prox;
+							free(aux);
+							Px->prox=aux1->linha;
+							aux1->linha->ant=Px;
+							Py->qtd_caracter=Py->qtd_caracter+aux1->qtd_caracter;
+							Py->prox=aux1->prox;
+							aux1->prox->ant=Py;
+							(*l)->qtd_de_linhas--;
+							free(aux1);
+
+
+							system("cls");
+							exibir_texto(*l);						
+							gotoxy(x,y);
+
+
+
+						}else if(Px!=NULL){
+						
+								if(remover(&Px,&Py)==0){
+								system("cls");
+								exibir_texto(*l);						
+								gotoxy(x,y);	
+
+							}else{// se remover no inicio com mais de um nó
+								system("cls");
+								exibir_texto(*l);
+								y--;
+								gotoxy(x,y);
+							}	
+
+						}
+
+					}else if(Py->ant !=  NULL){
+						aux1=Py;
+						Py=Py->ant;
+						(*l)->ult=Py;
+						free(aux1);
+						Py->prox=NULL;
+						(*l)->qtd_de_linhas--;
+						
+						Px=Py->linha;
+						mover_px(Py->qtd_caracter,&Px);
+						aux=Px;
+						Px=Px->ant;
+						Px->prox=NULL;
+						Py->qtd_caracter--;
+						free(aux);
+
+						system("cls");
+						exibir_texto(*l);
+						y=Py->qtd_caracter;
+						x--;
+						gotoxy(x,y);
+
+
 					}
-					}
-				
-				
+
+
 				}else if(isalnum(c) || c == ' '){
 
 					inserir_caracter_linha(Px,&Py,c,y);
@@ -546,7 +618,7 @@ void salvar(Ldescritor *l, FILE * arq){
 	int i=0,j=0;
 
 	fseek (arq, 0, 0); //coloca o arquivo na posicao inicial
-	
+
 
 	for ( Py = l->prim; i <=(l->qtd_de_linhas);i++){
 		//printf("I: [%i]",i);
@@ -556,10 +628,10 @@ void salvar(Ldescritor *l, FILE * arq){
 			Px=Px->prox; //proximo caracter
 		}
 		j=0;//iniciar o for
-			
+
 		if(Px!=NULL){
 			fprintf(arq, "\r\n");
-			
+
 		}Py= Py->prox;//aponta para proxima linha
 	}
 	fclose(arq);//fecha o arquivo
@@ -591,13 +663,13 @@ void carregar(Ldescritor **l, FILE * arq){
 			Py=Py->prox;
 			Px=Py->linha;
 		}else {
-			
+
 			inserir_caracter_linha(Px,&Py,ch,y);
 			if(Px==NULL)
 				Px=Py->linha;
 			else
 				Px=Px->prox;
-			
+
 			//printf("Letra: %c",Px->letra);
 		}
 	}//fim do while
@@ -606,7 +678,7 @@ void carregar(Ldescritor **l, FILE * arq){
 //OK
 void exibir(Tcaracter *l){
 	Tcaracter * aux=l;
-	
+
 	if(aux==NULL)
 		return;//vazio
 	else{
