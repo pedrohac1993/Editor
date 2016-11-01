@@ -1,0 +1,6 @@
+﻿  Source.c
+c:\repositorio\editor\hashing\exercicio ed2\exercicio ed2\source.c(204): warning C4101: 'h' : unreferenced local variable
+c:\repositorio\editor\hashing\exercicio ed2\exercicio ed2\source.c(254): warning C4101: 'h' : unreferenced local variable
+c:\repositorio\editor\hashing\exercicio ed2\exercicio ed2\source.c(369): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+c:\repositorio\editor\hashing\exercicio ed2\exercicio ed2\source.c(412): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+  Exercicio ED2.vcxproj -> C:\Repositorio\Editor\Hashing\Exercicio ED2\Debug\Exercicio ED2.exe
