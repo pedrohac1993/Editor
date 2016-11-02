@@ -105,7 +105,7 @@ void criar_no_linha(Tlinha ** novo){
 
 }
 //OK
-void inserir_linha(Ldescritor **l, Tlinha ** Py, int y){
+void inserir_linha(Ldescritor **l, Tlinha ** Py, int x){
 
 	Tlinha * novo=NULL, *aux=NULL;
 
@@ -119,20 +119,20 @@ void inserir_linha(Ldescritor **l, Tlinha ** Py, int y){
 		(*l)->ult=novo;
 		(*l)->qtd_de_linhas=0;
 	}else {		
-		//insere no fim
-		if ((*Py)->prox == NULL){			
-			criar_no_linha(&novo);
-			(*Py)->prox=novo;
-			novo->ant=(*Py);
-			novo->prox=NULL;
-			(*l)->qtd_de_linhas++;
-			//insere no inicio com nos já inseridos
-		}else if((*Py)->ant==NULL && y==0){				
+		//insere inicio
+		if (x==0){
 			criar_no_linha(&novo);
 			(*l)->prim=novo;
 			novo->prox=(*Py);
 			(*Py)->ant=novo;
+			(*l)->qtd_de_linhas++;			
+			//insere no fim
+		}else if((*Py)->prox == NULL){				
+			criar_no_linha(&novo);
+			(*Py)->prox=novo;
+			novo->ant=(*Py);			
 			(*l)->qtd_de_linhas++;
+			(*l)->ult=novo;
 			//insere no meio
 		}else{		
 			criar_no_linha(&novo);
@@ -256,12 +256,7 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 			//enter
 		}else if(c==13){
 
-
-
-			if(y==0 && x==0){
-
-				if(Px==NULL){// primeiro caracter
-
+			if(Px==NULL && y==0){// insere \n no inicio  da linha
 					inserir_caracter_linha(Px,&Py,'\n',y);
 					inserir_linha(l,&Py,y);
 					Py=Py->prox;
@@ -269,79 +264,61 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 					system("cls");
 					exibir_texto(*l);
 					x++;					
-					gotoxy(x,y);
-				}else{
-
-
-					inserir_linha(l,&Py,y);
-					Py=Py->ant;
-					inserir_caracter_linha(Px,&Py,'\n',y);
-					Py=Py->prox;
-					Px=Py->linha;
-					system("cls");
-					exibir_texto(*l);
-					//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
-
-					x=1;
-					y=0;
-					gotoxy(x,y);
-					//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
-
-
-				}
-
-
-
-
-
-			}else if(Px->prox==NULL){//'\n' no inicio do texto
-
-
+					gotoxy(x,y);	
+			}else if(y==Py->qtd_caracter){// insere \n no fim da linha
 				inserir_caracter_linha(Px,&Py,'\n',y);
 				inserir_linha(l,&Py,y);
-				x++;//ando com curso
-				y=0;
-				gotoxy(x,y);
 				Py=Py->prox;
 				Px=Py->linha;
-				//quebra de linha
-
-
-			}else{
-				aux=Px->prox;//ponto de inserção 'r'
-
-				//aux->ant=NULL;//desconecta da linha
-
-				qtd_caracter_proxima_linha=Py->qtd_caracter-y;//qtd caracter proxima linha '2'
-
-				inserir_caracter_linha(Px,&Py,'\n',y);
-
-				Px=Px->prox;//'\n'
-
-				Px->prox=NULL;//finaliza a primeira linha
-
-
-
-				Py->qtd_caracter=y;//qtd caracter primeira linha
-
-				inserir_linha(l,&Py,y);//Px='\n'
-				Py=Py->prox;
-				Px=Py->linha;
-
-				inserir_caracter_linha(aux,&Py,'\0',qtd_caracter_proxima_linha);			
-				Px=Py->linha;
-				Px->ant=NULL;
-
 				system("cls");
 				exibir_texto(*l);
-				//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
+				x++;
+				y=0;
+				gotoxy(x,y);			
+			}else{//quebra de linha
 
+				if(y==0){
+					if(Py->ant!=NULL){
+						Py=Py->ant;
+						inserir_linha(l,&Py,x);
+						Py=Py->prox;
+					}else{
+						inserir_linha(l,&Py,x);
+						Py=Py->ant;
+					}
+
+				
+				inserir_caracter_linha(Px,&Py,'\n',y);
+				Py=Py->prox;
+				Px=Py->linha;
+				system("cls");
+				exibir_texto(*l);
 				x++;
 				y=0;
 				gotoxy(x,y);
+				
+				}else{
+				aux=Px->prox;//ponto de inserção 'r'
+				//aux->ant=NULL;//desconecta da linha
+				qtd_caracter_proxima_linha=Py->qtd_caracter-y;//qtd caracter proxima linha '2'
+				inserir_caracter_linha(Px,&Py,'\n',y);
+				Px=Px->prox;//'\n'
+				Px->prox=NULL;//finaliza a primeira linha
+				Py->qtd_caracter=y;//qtd caracter primeira linha
+				inserir_linha(l,&Py,y);//Px='\n'
+				Py=Py->prox;
+				Px=Py->linha;
+				inserir_caracter_linha(aux,&Py,'\0',qtd_caracter_proxima_linha);			
+				Px=Py->linha;
+				Px->ant=NULL;
+				system("cls");
+				exibir_texto(*l);
+				//printf("X1: %i Y1: %i PX: %c Py: %i",x,y,Px->letra,Py->qtd_caracter);
+				x++;
+				y=0;
+				gotoxy(x,y);
+				}
 			}
-
-
 		}else{
 			if( c == -32){
 			}

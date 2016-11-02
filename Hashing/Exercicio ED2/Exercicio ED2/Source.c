@@ -133,9 +133,7 @@ int buscarTabelaHash (TNo * tabelaHashing , char codigo []) {
 		return -1;
 	else{
 		aux1=aux1->prox;
-		while (aux1 != NULL){
-
-			
+		while (aux1 != NULL){			
 			if(strcmp(aux1->codigo,codigo)==0){
 				return aux1->posicao;
 			}else if(strcmp(aux1->codigo,codigo)>0)
@@ -143,17 +141,9 @@ int buscarTabelaHash (TNo * tabelaHashing , char codigo []) {
 			else{
 				aux1=aux1->prox;
 			}
-
-
 		}
-
 		return -1;
-
-
 	}
-
-
-
 }
 
 void inserirTabelaHash (TNo ** tabelaHashing, char codigo [], int pos) {
@@ -178,7 +168,6 @@ void inserirTabelaHash (TNo ** tabelaHashing, char codigo [], int pos) {
 		aux1=*tabelaHashing;
 		aux2=(*tabelaHashing)->prox;
 		while (aux2!=NULL){
-
 			 if(strcmp(aux2->codigo,codigo)>0){
 				criar_no(&novo, codigo,pos);
 				aux1->prox=novo;
@@ -201,7 +190,7 @@ void removerTabelaHash (TNo ** tabelaHashing , char codigo []) {
 	3 - Procurar o nó que contém a chave na lista indicada pela função de hashing utilizando busca sequencial melhorada e removê-lo
 	*/
 	TNo * aux1, * aux2, *aux;
-	int i=0, h;
+	int i=0;
 
 	if(strcmp((*tabelaHashing)->codigo,codigo)==0){//remocao no inicio
 		aux1=*tabelaHashing;
@@ -212,22 +201,17 @@ void removerTabelaHash (TNo ** tabelaHashing , char codigo []) {
 		aux1=*tabelaHashing;
 		aux2=(*tabelaHashing)->prox;
 		do{
-
 			if(strcmp(aux2->codigo,codigo)==0){
 				aux1->prox=aux2->prox;
 				free(aux2);
 				aux=(*tabelaHashing);	
-
 				return;			
 			}else{
 				aux1=aux2;
 				aux2=aux2->prox;
-			}
-
-
+			}			
 		}while (aux2->prox!=NULL);
 	}
-
 }
 
 int hashing (char codigo []) {
@@ -236,7 +220,7 @@ int hashing (char codigo []) {
 	*/
 	int i, soma = 0, tam = strlen(codigo);
 	for (i = 0; i < tam; i++)
-		soma = soma + codigo[i];
+		soma = soma + (codigo[i] << (i%8));
 	return (soma % N);
 }
 
@@ -251,7 +235,7 @@ void cadastrar (FILE * arq, TNo * tabelaHashing []) {
 	4.2 - Gravar o registro no final do arquivo e inserir a entrada correspondente na tabela de hashing utilizando o procedimento inserirTabelaHash   
 	*/
 	char cod[12];
-	int pos,status,cont=0,h;
+	int pos,status,cont=0;
 	TProduto p;
 
 	printf("Digite o codigo: ");
@@ -271,16 +255,14 @@ void cadastrar (FILE * arq, TNo * tabelaHashing []) {
 		fseek(arq, 0, SEEK_END);		
 		cont=ftell(arq)/sizeof(TProduto);
 
-
 		fseek (arq, 0, 2);
 
 		status = fwrite (&p, sizeof (TProduto), 1, arq);
 		if (status != 1)
 			printf ("Erro de gravacao \n");
-		else{
-			printf ("Contato cadastrado com sucesso \n");
-			
+		else{				
 			inserirTabelaHash(&tabelaHashing[pos],p.codigo,cont);
+			printf ("Produto cadastrado com sucesso \n");		
 		}
 
 
@@ -290,8 +272,6 @@ void cadastrar (FILE * arq, TNo * tabelaHashing []) {
 
 	fclose(arq);
 	arq=fopen("produtos.dat","r+b");
-
-
 }
 
 void consultar (FILE * arq, TNo * tabelaHashing []) {
@@ -302,11 +282,8 @@ void consultar (FILE * arq, TNo * tabelaHashing []) {
 	4 - Caso encontre, fazer a leitura no arquivo na posição indicada pela tabela de hashing
 	5 - Exibir os dados lidos
 	*/
-
-
 	char cod[12];
 	int pos=0,status=0,h;
-
 	TProduto p;
 
 	printf("Digite o codigo: ");
@@ -371,15 +348,12 @@ void alterar (FILE * arq, TNo * tabelaHashing []) {
 			if (status != 1)
 				printf ("Erro de gravacao \n");
 			else
-				printf ("Contato alterado com sucesso \n");
+				printf ("Produto alterado com sucesso \n");
 		}
 
 	}else{
 		printf("Produto Nao Cadastrada\n");
 	}
-
-
-
 }
 
 void remover (FILE * arq, TNo * tabelaHashing []) {
@@ -415,15 +389,12 @@ void remover (FILE * arq, TNo * tabelaHashing []) {
 				printf ("Erro de gravacao \n");
 			else{
 				removerTabelaHash(&tabelaHashing[h],p.codigo);
-				printf ("Produto removido com sucesso \n");
-				
-	}
-		}
-
+				printf ("Produto removido com sucesso \n");				
+				}
+			}
 	}else{
 		printf("Produto Nao Cadastrada\n");
 	}
-
 }
 
 void destruirIndice(TNo * tabelaHashing []) {
@@ -433,7 +404,6 @@ void destruirIndice(TNo * tabelaHashing []) {
 	TNo *aux;
 
 	while(i<N){
-
 		if(tabelaHashing[i] != NULL){			
 			while (tabelaHashing[i]!=NULL){
 				aux=tabelaHashing[i];
@@ -444,11 +414,4 @@ void destruirIndice(TNo * tabelaHashing []) {
 			i++;
 		}
 	}
-
-
-
 }
-
-
-
-
