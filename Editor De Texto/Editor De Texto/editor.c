@@ -458,8 +458,6 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 						else
 							mover_px(3,&Px);
 
-
-
 						if(Px!=NULL){
 
 							
