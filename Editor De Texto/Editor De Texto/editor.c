@@ -229,6 +229,7 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 				printf("Erro De Abertura do Arquivo");
 			//ctrl+e
 		}else if(c==5){
+			system("cls");
 			return;
 			//enter
 		}else if(c==13){
@@ -643,9 +644,9 @@ void salvar(Ldescritor *l, FILE * arq, char nome_arquivo[]){
 	fclose(arq);//fecha o arquivo
 
 	system("cls");
-	gotoxy(9,25);
+	gotoxy(9,35);
 	printf("Salvando...");
-	for ( i = 15; i < 47; i++){
+	for ( i = 15; i < 67; i++){
 		for (j = 0; j < 100000000; j++){	
 
 		}
@@ -653,10 +654,11 @@ void salvar(Ldescritor *l, FILE * arq, char nome_arquivo[]){
 		printf("%c",c);
 	}
 
+	gotoxy(12,28);
+	printf("Arquivo Salvo Com Sucesso\n\n");
 
-	gotoxy(12,18);
-	printf("Arquivo Salvo Com Sucesso");
-
+	gotoxy(15,22);
+	system("pause");
 	system("cls");
 	exibir_texto(l);
 }
