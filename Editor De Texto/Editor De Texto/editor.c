@@ -455,12 +455,10 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 				}else if(c==83){
 
 					if(y<Py->qtd_caracter+1){
-						aux=Px;					
-
-						if(y==0 || y==Py->qtd_caracter)
+						aux=Px;
+						if(y>0)
 							Px=Px->prox;						
-						else
-							mover_px(3,&Px);
+							
 
 						if(Px!=NULL){
 
@@ -469,7 +467,7 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 								system("cls");
 								exibir_texto(*l);							
 								gotoxy(x,y);
-								Px=aux;
+								
 
 							}else if(Py->prox->prox==NULL){// Px->letra == \n concatene
 								
@@ -478,47 +476,61 @@ void inserir(Ldescritor **l, FILE * arq, char nome_arquivo[]){
 								}else if(y==Py->qtd_caracter-1){
 								y=Py->qtd_caracter-1;								
 								}								
-								aux1=Py->prox;//								
-								(*l)->qtd_de_linhas--;//
-								Py->prox=NULL;//
-								Py->qtd_caracter=Py->qtd_caracter+aux1->qtd_caracter;//
+								aux1=Py->prox;						
+								(*l)->qtd_de_linhas--;
+								Py->prox=NULL;
+								Py->qtd_caracter=Py->qtd_caracter+aux1->qtd_caracter;
+								if(Px->ant==NULL){
+									Py->linha=aux1->linha;
+									Px=Py->linha;
+								}else{
 								Px=Px->ant;
 								Px->prox=aux1->linha;
-								aux1->linha->ant=Px;								
-								Px=Px->ant;
+								if(aux1->linha!=NULL)
+									aux1->linha->ant=Px;
+								}
 								free(aux1); //	
 								system("cls");
 								exibir_texto(*l);	
 								gotoxy(x,y);
-								Px=aux;
+								
 							}else{ //Py->prox->prox!=NULL
 								if(y==Py->qtd_caracter){
 								y=Py->qtd_caracter;								
 								}else if(y==Py->qtd_caracter-1){
 								y=Py->qtd_caracter-1;								
-								}								
-								aux1=Py->prox;//								
-								(*l)->qtd_de_linhas--;//
-								
-								aux2=Py->prox;
-								Py->prox=aux2->prox;
-								aux2->prox->ant=Py;
-								
+								}	
+
+								(*l)->qtd_de_linhas--;
+								aux1=Py->prox;
+								aux2=aux1->prox;
+
+								Py->prox=aux2;
+								aux2->ant=Py;								
 								Py->qtd_caracter=Py->qtd_caracter+aux1->qtd_caracter;//
+
+								if(Px->ant==NULL){
+									Py->linha=aux1->linha;
+									Px=Py->linha;
+								}else{
 								Px=Px->ant;
 								Px->prox=aux1->linha;
-								aux1->linha->ant=Px;								
-								Px=Px->ant;
+								aux1->linha->ant=Px;
+								}		
+
+
+
+							
 								free(aux1); //	
+
 								system("cls");
 								exibir_texto(*l);	
 								gotoxy(x,y);
-								Px=aux;
+								
 							}
 
-						}else{//Px == NULL 
+						}else
 							Px=aux;
-						}
 					}
 				}else if(isalnum(c) || isspace(c) || isupper(c) || ispunct(c) || islower(c) || isdigit(c) || isalpha(c)){
 
