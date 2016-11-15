@@ -120,9 +120,9 @@ void inserir_linha(Ldescritor **l, Tlinha ** Py, int x){
 		//insere inicio
 		if (x==0){
 			criar_no_linha(&novo);
-			(*l)->prim=novo;
-			novo->prox=(*Py);
-			(*Py)->ant=novo;
+			(*l)->ult=novo;
+			novo->ant=(*Py);
+			(*Py)->prox=novo;
 			(*l)->qtd_de_linhas++;			
 			//insere no fim
 		}else if((*Py)->prox == NULL){				
